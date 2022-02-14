@@ -1,23 +1,19 @@
+//! Project Euler 5
+//!
+//! 2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
+//!
+//! What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
+
+extern crate num;
+
+use num::integer::gcd;
+
 fn main() {
-    let set: Vec<u64> = (1..=20).rev().scan(vec![], |acc, n| {
-        if acc.iter().any(|x| x % n == 0) {
-            None
-        } else {
-            acc.push(n);
-            Some(n)
-        }
-    }).collect();
 
-    println!("{:?}", set);
+    // lcm(a, b, c) = lcm(a, lcm(b, c))
 
-    let smallest = (1 .. ::std::u64::MAX)
-        .step_by(20 * 19)
-        .find(|n| {
-            set
-                .iter()
-                .rev()
-                .all(|d| n % d == 0)
-        }).unwrap();
-
-    assert_eq!(smallest, 232_792_560);
+    let least: u64 = (1..=20).fold(1u64, |acc, n|
+        (n * acc) / gcd(n, acc)
+    );
+    println!("{}", least);
 }
